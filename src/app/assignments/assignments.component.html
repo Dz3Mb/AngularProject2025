@@ -1,0 +1,60 @@
+<h2>Ajout d'un devoir</h2>
+
+<form ngForm (submit)="onSubmit($event)" #assignmentForm>
+  <mat-form-field appearance="fill">
+    <mat-label>Nom du devoir</mat-label>
+    <input
+      matInput
+      type="text"
+      name="nomDevoir"
+      [(ngModel)]="nomDevoir"
+    />
+  </mat-form-field>
+
+  <br />
+
+  <mat-form-field appearance="fill">
+    <mat-label>Date de rendu</mat-label>
+    <input
+      matInput
+      [matDatepicker]="picker"
+      name="dateDeRendu"
+      [(ngModel)]="dateDeRendu"
+    />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <br />
+
+  <button
+    mat-stroked-button
+    color="primary"
+    [disabled]="!ajoutActive"
+    type="submit"
+  >
+    Ajouter un devoir
+  </button>
+</form>
+
+<br />
+
+<!-- Aperçu en direct -->
+@if (nomDevoir && dateDeRendu) {
+  <p>Tu es en train d’ajouter : <strong>{{ nomDevoir }}</strong> pour le <strong>{{ dateDeRendu }}</strong></p>
+} @else {
+  <p>Remplis le formulaire ci-dessus pour ajouter un devoir.</p>
+}
+
+<br />
+
+<!-- Liste des assignments -->
+<h2>Liste des devoirs</h2>
+
+@for (assignment of assignments; track assignment.nom) {
+  <div [ngStyle]="{ 'background-color': assignment.rendu ? 'green' : 'red' }" style="padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+    <h3>{{ assignment.nom }}</h3>
+    <p>Date de rendu : {{ assignment.dateDeRendu }}</p>
+    <p [appRendu]="assignment.rendu">Rendu : {{ assignment.rendu }}</p>
+  </div>
+}
