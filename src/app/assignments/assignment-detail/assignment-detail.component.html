@@ -1,0 +1,17 @@
+@if (assignmentTransmis) {
+    <mat-card class="card">
+      <mat-card-title>{{ assignmentTransmis.nom }}</mat-card-title>
+      <mat-card-subtitle>Date : {{ assignmentTransmis.dateDeRendu | date }}</mat-card-subtitle>
+      <mat-card-content>
+        <p>Status : {{ assignmentTransmis.rendu ? 'Rendu' : 'Non rendu' }}</p>
+  
+        @if (!assignmentTransmis.rendu) {
+          <mat-checkbox (change)="onAssignmentRendu()">Marquer comme rendu</mat-checkbox>
+        }
+      </mat-card-content>
+  
+      <mat-card-actions>
+        <button mat-raised-button color="warn" (click)="onDeleteClick()">Supprimer</button>
+      </mat-card-actions>
+    </mat-card>
+  }  

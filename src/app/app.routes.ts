@@ -1,8 +1,12 @@
 import { Routes } from '@angular/router';
-import { AssignmentsComponent } from './assignments/assignments.component';
-import { HomeComponent } from './home/home.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'assignments', component: AssignmentsComponent }
+  {
+    path: '',
+    loadComponent: () => import('./home/home.component').then(m => m.HomeComponent)
+  },
+  {
+    path: 'assignments',
+    loadComponent: () => import('./assignments/assignments.component').then(m => m.AssignmentsComponent)
+  }
 ];

@@ -5,17 +5,12 @@ import { Directive, ElementRef, Input, OnInit } from '@angular/core';
   standalone: true
 })
 export class RenduDirective implements OnInit {
-  @Input() appRendu = false;
+  @Input() appRendu: boolean = false;
 
   constructor(private el: ElementRef) {}
 
-  ngOnInit(): void {
-    if (this.appRendu) {
-      this.el.nativeElement.style.color = 'green';
-      this.el.nativeElement.style.fontWeight = 'bold';
-    } else {
-      this.el.nativeElement.style.color = 'red';
-      this.el.nativeElement.style.fontStyle = 'italic';
-    }
+  ngOnInit() {
+    this.el.nativeElement.style.color = this.appRendu ? 'green' : 'red';
+    this.el.nativeElement.style.fontWeight = 'bold';
   }
 }
