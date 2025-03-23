@@ -1,31 +1,35 @@
 import { Injectable } from '@angular/core';
 import { Assignment } from '../assignments/assignment.model';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AssignmentsService {
-  private apiUrl = 'http://localhost:3000/assignments';
+  private assignments: Assignment[] = [
+    { id: 1, nom: 'TP Angular', dateDeRendu: new Date('2024-04-01'), rendu: true },
+    { id: 2, nom: 'TP React', dateDeRendu: new Date('2024-04-10'), rendu: false }
+  ];
 
-  constructor(private http: HttpClient) {}
-
+  // 🔁 Simuler un appel réseau
   getAssignments(): Observable<Assignment[]> {
-    return this.http.get<Assignment[]>(this.apiUrl);
+    return of(this.assignments);
   }
 
-  addAssignment(a: Assignment): Observable<Assignment> {
-    return this.http.post<Assignment>(this.apiUrl, a);
+  addAssignment(a: Assignment): Observable<string> {
+    a.id = Math.floor(Math.random() * 100000);
+    this.assignments.push(a);
+    return of("Ajouté !");
   }
 
-  deleteAssignment(a: Assignment): Observable<void> {
-    const url = `${this.apiUrl}/${a.id}`;
-    return this.http.delete<void>(url);
+  deleteAssignment(a: Assignment): Observable<string> {
+    this.assignments = this.assignments.filter(asg => asg.id !== a.id);
+    return of("Supprimé !");
   }
 
   updateAssignment(a: Assignment): Observable<string> {
-    const url = `${this.apiUrl}/${a.id}`;
-    return this.http.put<string>(url, a);
+    const index = this.assignments.findIndex(asg => asg.id === a.id);
+    if (index > -1) this.assignments[index] = a;
+    return of("Mis à jour !");
   }
 }

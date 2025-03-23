@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import { AssignmentsComponent } from './assignments/assignments.component';
+import { RouterModule } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    AssignmentsComponent,
-    MatToolbarModule,
+    RouterModule,
+    MatToolbarModule
   ],
   templateUrl: './app.component.html',
   styleUrls: []
 })
-export class AppComponent {}
+export class AppComponent { }

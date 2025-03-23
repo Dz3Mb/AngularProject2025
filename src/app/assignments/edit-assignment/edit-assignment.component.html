@@ -1,0 +1,20 @@
+<h2>Modifier un devoir</h2>
+
+<form (submit)="onSubmit()">
+  <mat-form-field>
+    <input matInput placeholder="Nom du devoir" [(ngModel)]="nom" name="nom">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput [matDatepicker]="picker" placeholder="Date de rendu"
+           [(ngModel)]="dateDeRendu" name="dateDeRendu">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-checkbox [(ngModel)]="rendu" name="rendu">
+    Marqué comme rendu
+  </mat-checkbox>  
+
+  <button mat-stroked-button color="primary">Enregistrer</button>
+</form>

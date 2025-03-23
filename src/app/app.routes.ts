@@ -1,12 +1,16 @@
 import { Routes } from '@angular/router';
+import { AssignmentsComponent } from './assignments/assignments.component';
+import { AddAssignmentComponent } from './assignments/add-assignment/add-assignment.component';
+import { AssignmentDetailComponent } from './assignments/assignment-detail/assignment-detail.component';
+import { EditAssignmentComponent } from './assignments/edit-assignment/edit-assignment.component';
 
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./home/home.component').then(m => m.HomeComponent)
+    component: AssignmentsComponent,
+    runGuardsAndResolvers: 'always',
   },
-  {
-    path: 'assignments',
-    loadComponent: () => import('./assignments/assignments.component').then(m => m.AssignmentsComponent)
-  }
+  { path: 'add', component: AddAssignmentComponent },
+  { path: 'assignment/:id', component: AssignmentDetailComponent },
+  { path: 'edit/:id', component: EditAssignmentComponent },
 ];

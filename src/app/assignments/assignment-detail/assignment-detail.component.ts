@@ -5,6 +5,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Assignment } from '../assignment.model';
 import { AssignmentsService } from '../../shared/assignments.service';
+import { ActivatedRoute } from '@angular/router';
+import { inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-assignment-detail',
@@ -18,24 +22,38 @@ import { AssignmentsService } from '../../shared/assignments.service';
   templateUrl: './assignment-detail.component.html',
   styleUrls: []
 })
-export class AssignmentDetailComponent {
-  @Input() assignmentTransmis?: Assignment;
+export class AssignmentDetailComponent implements OnInit {
+  assignmentTransmis?: Assignment;
   @Output() deleteAssignment = new EventEmitter<Assignment>();
 
-  constructor(private assignmentsService: AssignmentsService) {}
+  private route = inject(ActivatedRoute);
+  private assignmentsService = inject(AssignmentsService);
+  private router = inject(Router);
+
+  ngOnInit(): void {
+    const id = +this.route.snapshot.params['id'];
+    this.assignmentsService.getAssignments().subscribe(assignments => {
+      this.assignmentTransmis = assignments.find(a => a.id === id);
+    });
+  }
 
   onDeleteClick() {
-    if (this.assignmentTransmis) {
-      this.deleteAssignment.emit(this.assignmentTransmis);
-    }
+    if (!this.assignmentTransmis) return;
+
+    this.assignmentsService.deleteAssignment(this.assignmentTransmis).subscribe(() => {
+      console.log("Assignment supprimé.");
+      this.router.navigate(['/']); // ✅ fonctionnera maintenant
+    });
   }
 
   onAssignmentRendu() {
     if (!this.assignmentTransmis) return;
-
+  
     this.assignmentTransmis.rendu = true;
+  
     this.assignmentsService.updateAssignment(this.assignmentTransmis).subscribe(() => {
-      console.log('Assignment mis à jour comme rendu.');
+      console.log('Assignment marqué comme rendu.');
+      this.router.navigate(['/']);
     });
-  }
+  }  
 }

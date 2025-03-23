@@ -1,12 +1,15 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { Assignment } from '../assignment.model';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
+import { Assignment } from '../assignment.model';
+import { AssignmentsService } from '../../shared/assignments.service';
+import { Router } from '@angular/router';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-add-assignment',
@@ -26,7 +29,11 @@ import { MatButtonModule } from '@angular/material/button';
 export class AddAssignmentComponent {
   nomDevoir = '';
   dateDeRendu?: Date;
+
   @Output() nouvelAssignment = new EventEmitter<Assignment>();
+
+  private assignmentsService: AssignmentsService = inject(AssignmentsService);
+  private router: Router = inject(Router);
 
   onSubmit() {
     if (!this.nomDevoir || !this.dateDeRendu) return;
@@ -38,7 +45,10 @@ export class AddAssignmentComponent {
       rendu: false
     };
 
-    this.nouvelAssignment.emit(newAssignment);
+    this.assignmentsService.addAssignment(newAssignment).subscribe(() => {
+      console.log("Assignment ajouté !");
+      this.router.navigate(['/']);
+    });
 
     this.nomDevoir = '';
     this.dateDeRendu = undefined;

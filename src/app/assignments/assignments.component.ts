@@ -7,6 +7,11 @@ import { RenduDirective } from '../shared/rendu.directive';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { AssignmentsService } from '../shared/assignments.service';
+import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-assignments',
@@ -17,7 +22,9 @@ import { AssignmentsService } from '../shared/assignments.service';
     MatButtonModule,
     AssignmentDetailComponent,
     AddAssignmentComponent,
-    RenduDirective
+    RenduDirective,
+    RouterModule,
+    MatIconModule
   ],
   templateUrl: './assignments.component.html',
   styleUrls: []
@@ -28,9 +35,23 @@ export class AssignmentsComponent implements OnInit {
   formVisible = false;
   assignmentSelectionne?: Assignment;
 
-  constructor(private assignmentsService: AssignmentsService) {}
+  constructor(private router: Router, private assignmentsService: AssignmentsService) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    // Rafraîchir une 1ère fois au chargement
+    this.refreshAssignments();
+
+    // Forcer le rafraîchissement si on revient sur "/"
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        if ((event as NavigationEnd).urlAfterRedirects === '/') {
+          this.refreshAssignments();
+        }
+      });
+  }
+
+  refreshAssignments() {
     this.assignmentsService.getAssignments().subscribe(data => {
       this.assignments = data;
     });
@@ -51,12 +72,6 @@ export class AssignmentsComponent implements OnInit {
     this.assignmentsService.deleteAssignment(assignment).subscribe(() => {
       this.refreshAssignments();
       this.assignmentSelectionne = undefined;
-    });
-  }
-  
-  refreshAssignments() {
-    this.assignmentsService.getAssignments().subscribe(data => {
-      this.assignments = data;
     });
   }
   
