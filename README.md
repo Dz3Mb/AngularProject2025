@@ -1,8 +1,7 @@
 # TP Angular – M1 Info 2024-2025
 
 ## 👨‍💻 Étudiant
-- Nom : Malik
-- Projet : Gestion de devoirs avec Angular
+- Nom : Malik MOUSSA
 
 ## 🔧 Fonctionnalités
 - Ajout, édition, suppression de devoirs
