@@ -7,13 +7,16 @@
 <mat-list>
   @for (assignment of assignments; track assignment.id) {
     <mat-list-item>
-      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <div style="display: flex; justify-content: space-between; width: 100%;">
         <span [appRendu]="assignment.rendu">{{ assignment.nom }}</span>
-        <button mat-icon-button color="primary" [routerLink]="['/edit', assignment.id]">
+
+        <button mat-icon-button
+                color="primary"
+                [routerLink]="['/edit', assignment.id]"
+                [disabled]="!isAdmin">
           <mat-icon>edit</mat-icon>
         </button>
       </div>
     </mat-list-item>
-    <mat-divider></mat-divider>
   }
 </mat-list>

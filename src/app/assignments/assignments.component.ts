@@ -7,11 +7,10 @@ import { RenduDirective } from '../shared/rendu.directive';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { AssignmentsService } from '../shared/assignments.service';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-
+import { AuthService } from '../shared/auth.service'; // ✅
 
 @Component({
   selector: 'app-assignments',
@@ -34,21 +33,30 @@ export class AssignmentsComponent implements OnInit {
   assignments: Assignment[] = [];
   formVisible = false;
   assignmentSelectionne?: Assignment;
+  isAdmin = false;
 
-  constructor(private router: Router, private assignmentsService: AssignmentsService) {}
+  constructor(
+    private router: Router,
+    private assignmentsService: AssignmentsService,
+    private authService: AuthService // ✅ injection
+  ) {}
 
   ngOnInit(): void {
-    // Rafraîchir une 1ère fois au chargement
     this.refreshAssignments();
+    this.updateAdminStatus();
 
-    // Forcer le rafraîchissement si on revient sur "/"
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event) => {
         if ((event as NavigationEnd).urlAfterRedirects === '/') {
           this.refreshAssignments();
+          this.updateAdminStatus(); // ✅ mettre à jour après navigation
         }
       });
+  }
+
+  updateAdminStatus() {
+    this.isAdmin = this.authService.isAdmin();
   }
 
   refreshAssignments() {
@@ -56,7 +64,7 @@ export class AssignmentsComponent implements OnInit {
       this.assignments = data;
     });
   }
-  
+
   onNouvelAssignment(event: Assignment) {
     this.assignmentsService.addAssignment(event).subscribe(() => {
       this.refreshAssignments();
@@ -67,16 +75,15 @@ export class AssignmentsComponent implements OnInit {
   onAssignmentClick(assignment: Assignment) {
     this.assignmentSelectionne = assignment;
   }
-  
+
   onAssignmentDeleted(assignment: Assignment) {
     this.assignmentsService.deleteAssignment(assignment).subscribe(() => {
       this.refreshAssignments();
       this.assignmentSelectionne = undefined;
     });
   }
-  
+
   onAddAssignmentBtnClick() {
     this.formVisible = true;
   }
-
 }

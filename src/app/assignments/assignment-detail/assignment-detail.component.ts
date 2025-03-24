@@ -8,6 +8,7 @@ import { AssignmentsService } from '../../shared/assignments.service';
 import { ActivatedRoute } from '@angular/router';
 import { inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../../shared/auth.service';
 
 
 @Component({
@@ -30,11 +31,18 @@ export class AssignmentDetailComponent implements OnInit {
   private assignmentsService = inject(AssignmentsService);
   private router = inject(Router);
 
+  private authService = inject(AuthService);
+
+  isAdmin = false;
+  isLogged = false;
+
   ngOnInit(): void {
     const id = +this.route.snapshot.params['id'];
     this.assignmentsService.getAssignments().subscribe(assignments => {
       this.assignmentTransmis = assignments.find(a => a.id === id);
     });
+    this.isAdmin = this.authService.isAdmin();
+    this.isLogged = this.authService.isLogged();
   }
 
   onDeleteClick() {

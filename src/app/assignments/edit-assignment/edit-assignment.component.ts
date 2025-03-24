@@ -11,6 +11,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { inject } from '@angular/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { AuthService } from '../../shared/auth.service';
+
 
 @Component({
   selector: 'app-edit-assignment',
@@ -35,21 +37,34 @@ export class EditAssignmentComponent implements OnInit {
   dateDeRendu?: Date;
   rendu = false;
 
+  isAdmin = false;
+  isLogged = false;
+
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private assignmentsService = inject(AssignmentsService);
+  private authService = inject(AuthService);
 
-  ngOnInit(): void {
+  ngOnInit() {
     const id = +this.route.snapshot.params['id'];
+    const allAssignments = this.assignmentsService.getAssignments();
+    allAssignments.subscribe(assignments => {
+      const a = assignments.find(item => item.id === id);
+      if (!a) return;
+      this.assignment = a;
+      this.nom = a.nom;
+      this.dateDeRendu = new Date(a.dateDeRendu);
+      this.rendu = a.rendu;
+    });
 
-    this.assignmentsService.getAssignments().subscribe(assignments => {
-      const a = assignments.find(asg => asg.id === id);
-      if (a) {
-        this.assignment = a;
-        this.nom = a.nom;
-        this.dateDeRendu = new Date(a.dateDeRendu);
-        this.rendu = a.rendu;
-      }
+    this.isAdmin = this.authService.isAdmin();
+    this.isLogged = this.authService.isLogged();
+  }
+
+  delete() {
+    if (!this.assignment) return;
+    this.assignmentsService.deleteAssignment(this.assignment).subscribe(() => {
+      this.router.navigate(['/']);
     });
   }
 

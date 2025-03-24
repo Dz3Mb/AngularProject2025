@@ -16,10 +16,19 @@
     </mat-card-content>
 
     <mat-card-actions>
-      <button mat-raised-button color="warn" (click)="onDeleteClick()">
-        Supprimer
-      </button>
+      @if (isLogged) {
+        <button mat-raised-button color="warn"
+                (click)="onDeleteClick()"
+                [disabled]="!isAdmin">
+          Supprimer
+        </button>
+      }
     </mat-card-actions>
   </mat-card>
   
+  @if (isLogged && !isAdmin) {
+    <p style="color: gray; font-size: 0.85rem;">
+      Seuls les admins peuvent supprimer un devoir.
+    </p>
+  }  
 }
